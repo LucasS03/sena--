@@ -1,0 +1,18 @@
+real a, b, media
+
+COMECOU
+  escreva << "Sua primeira nota" @@ o usuário vai digitar a primeira nota
+  leia >> a
+
+  escreva << "Sua segunda nota" @@ o usuário vai digitar a segunda nota
+  leia >> b
+
+  media << (a + b) / 2
+  escreva << "Sua média é ", media
+
+  SE (media > 7)
+    escreva << "Passou, macho!"
+  ELSE 
+    escreva << "Ficou, macho!"
+
+ACABOOOU
