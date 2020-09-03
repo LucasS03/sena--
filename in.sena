@@ -15,4 +15,8 @@ COMECOU
   ELSE 
     escreva << "Ficou, macho!"
 
-ACABOOOU
+  REPETE (i > 0)
+    escreva << "Ainda é maior que 0 (ZERO)"
+    i << i - 1
+
+ACABOU
