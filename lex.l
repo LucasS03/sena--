@@ -23,7 +23,7 @@ ATRIBUICAO "<<"
 VARIAVEL {LETRA}({LETRA}|{NUMERO}|"-"|"_")*
 LER "leia"(" ")*">>"(" ")*
 ESCREVER "escreva"(" ")*"<<"
-CONDICIONAL "SE"|"ELSE"
+CONDICIONAL "SENAO SE"|"SE"|"SENAO"
 REPETICAO "REPETE"
 INVALIDO .
 
@@ -35,7 +35,7 @@ INVALIDO .
 "ACABOU" {
   printf("Identificador de fim do programa: %s\n", yytext);
 }
-"\n"|" "|"\t"|","|"("|")" {
+"\n"|" "|"\t"|","|"("|")"|"{"|"}" {
   /* ignore */
 }
 

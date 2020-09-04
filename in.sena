@@ -1,6 +1,14 @@
+inteiro int1
+texto txt1
 real a, b, media
 
 COMECOU
+
+  real sub << 5-1
+  real som << 5+1
+  real div << 5/1
+  real exp << 5^1
+
   escreva << "Sua primeira nota" @@ o usuário vai digitar a primeira nota
   leia >> a
 
@@ -10,13 +18,19 @@ COMECOU
   media << (a + b) / 2
   escreva << "Sua média é ", media
 
-  SE (media > 7)
-    escreva << "Passou, macho!"
-  ELSE 
-    escreva << "Ficou, macho!"
+  SE (media == 10) {
+    escreva << "Tu é o bichão mesmo, ein?!"
+  } SENAO SE (media > 7) {
+    escreva << "Passooou, macho!"
+  } SENAO SE (media < 4) {
+    escreva << "Ihhh, reprovou!"
+  } SENAO {
+    escreva << "Vai pra recuperação!"
+  }
 
-  REPETE (i > 0)
+  REPETE (i > 0) {
     escreva << "Ainda é maior que 0 (ZERO)"
     i << i - 1
+  }
 
 ACABOU
