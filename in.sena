@@ -1,36 +1,21 @@
-inteiro int1
-texto txt1
-real a, b, media
+inicio
 
-COMECOU
+  real b
+  real h
+  real area
 
-  real sub << 5-1
-  real som << 5+1
-  real div << 5/1
-  real exp << 5^1
+  escreva("Cálculo da área do retângulo")
+  escreva("") @@ pular linha
 
-  escreva << "Sua primeira nota" @@ o usuário vai digitar a primeira nota
-  leia >> a
+  escreva("Digite a base: ")
+  leia(b)
 
-  escreva << "Sua segunda nota" @@ o usuário vai digitar a segunda nota
-  leia >> b
+  escreva("Digite a altura: ")
+  leia(h)
 
-  media << (a + b) / 2
-  escreva << "Sua média é ", media
+  escreva("")
+  escreva("A área do retângulo é: ")
+  area << h * b
+  escreva(area)
 
-  SE (media == 10) {
-    escreva << "Tu é o bichão mesmo, ein?!"
-  } SENAO SE (media > 7) {
-    escreva << "Passooou, macho!"
-  } SENAO SE (media < 4) {
-    escreva << "Ihhh, reprovou!"
-  } SENAO {
-    escreva << "Vai pra recuperação!"
-  }
-
-  REPETE (i > 0) {
-    escreva << "Ainda é maior que 0 (ZERO)"
-    i << i - 1
-  }
-
-ACABOU
+fim

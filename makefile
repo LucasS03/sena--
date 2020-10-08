@@ -1,5 +1,6 @@
-all: lex.l
+all: lex.l sint.y
 	flex -i lex.l 
-	gcc lex.yy.c -o sena-compilador -lfl
-	clear
+	bison sint.y
+	gcc sint.tab.c -o sena-compilador -lfl -lm
+	
 	./sena-compilador

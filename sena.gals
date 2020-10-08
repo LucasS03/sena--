@@ -1,0 +1,57 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = C++
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = SLR
+#RegularDefinitions
+TIPO: "inteiro" | "real" | "texto" | "boleano"
+LEITURA: "leia << "
+ESCRITA: "escreva"
+NUMERO : [0-9]
+LETRA: [a-zA-Z]
+ARITMETICO: "+" | "-" | "*" | "/" | "^" | "r/"
+LOGICO: "<" | "<=" | ">" | ">=" | "=" | "/=" | "&" |  "|"
+ATRIBUICAO: "<<"
+COMENTARIO: !
+#Tokens
+DECLARACAO: {TIPO}
+RECEBE: {ATRIBUICAO}
+ARITMETICO: {ARITMETICO}
+LOGICO: {LOGICO}
+
+ENTRADA: {LEITURA}
+SAIDA: {ESCRITA}("(")("""""{LETRA}+""""")(")")
+
+BOLEANO: ("verdadeiro" | "falso")
+REAL: {NUMERO}+("."){NUMERO}+
+DIGITO: {NUMERO}+
+TEXTO: """"{LETRA}+""""
+
+VAR: {LETRA}({LETRA} | {NUMERO} | "-" | "_")*
+NOME: {LETRA}+
+"("
+")"
+
+COMENTARIO: {COMENTARIO}(" " | {LETRA} | {NUMERO})*
+ : [" "\n\t]
+#NonTerminals
+<cod>
+<atrib>
+<exp>
+#Grammar
+<cod> ::= <cod><atrib> 
+	| <atrib>
+	;
+
+<atrib> ::= VAR RECEBE <exp>;
+
+<exp> ::= <exp> ARITMETICO <exp> |
+	"(" <exp> ")" |
+	VAR |
+	DIGITO;

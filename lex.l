@@ -1,101 +1,99 @@
 %{
-  // Código C
-
-  // bibliotecas
-  // funções
-  // structs
+  
 %}
 
 INTEIRO "inteiro"
 REAL "real"
 TEXTO "texto"
 
-NUMERO [0-9]+
 LETRA [a-zA-Z]+
+NUMERO [0-9]+
+NUMERO_REAL [0-9]+\.?[0-9]*
 STRING \".*\"
+RAIZ "raiz"
 
-ARITMETICO "+"|"-"|"*"|"/"|"^"
-LOGICO ">"|"<"|"=="
-
+VARIAVEL {LETRA}({LETRA}|{NUMERO}|"-"|"_")*
 COMENTARIO "@@".*
 ATRIBUICAO "<<"
 
-VARIAVEL {LETRA}({LETRA}|{NUMERO}|"-"|"_")*
-LER "leia"(" ")*">>"(" ")*
-ESCREVER "escreva"(" ")*"<<"
+LER "leia"
+ESCREVER "escreva"
+
+INICIO "inicio"
+FIM "fim"
+
+LOGICO ">"|"<"|"=="
 CONDICIONAL "SENAO SE"|"SE"|"SENAO"
 REPETICAO "REPETE"
 INVALIDO .
-
 %%
 
-"COMECOU" {
-  printf("Identificador de início do programa: %s\n", yytext);
+{INICIO} {
+  return INICIO;
 }
-"ACABOU" {
-  printf("Identificador de fim do programa: %s\n", yytext);
-}
-"\n"|" "|"\t"|","|"("|")"|"{"|"}" {
-  /* ignore */
+{FIM} {
+  return FIM;
 }
 
 {CONDICIONAL} {
-  printf("Estrutura condicional: %s\n", yytext);
+  printf("Apenas léxico. Estrutura condicional: %s\n", yytext);
 }
 {REPETICAO} {
-  printf("Estrutura de repeticao: %s\n", yytext);
+  printf("Apenas léxico. Estrutura de repeticao: %s\n", yytext);
 }
 {ATRIBUICAO} {
-  printf("Atribuição: %s\n", yytext);
+  return ATRIBUICAO;
 }
 
 {INTEIRO} {
-  printf("Tipo inteiro: %s\n", yytext);
+  // ...
 }
 {REAL} {
-  printf("Tipo real: %s\n", yytext);
+  return REAL;
 }
 {TEXTO} {
-  printf("Tipo texto: %s\n", yytext);
+  // return TEXTO;
+}
+{RAIZ} {
+  return RAIZ;
+}
+{LER} {
+  return LER;
+}
+{ESCREVER} {
+  return ESCREVER;
 }
 {VARIAVEL} {
-  printf("Variável: %s\n", yytext);
+  strcpy (yylval.texto,yytext);
+  return VARIAVEL;
 }
 
 {COMENTARIO} {
-  printf("Comentário: %s\n", yytext);
-}
-{LER} {
-  printf("Operação de leitura: %s\n", yytext);
-}
-{ESCREVER} {
-  printf("Operação de escrita: %s\n", yytext);
+  /* ignore */
 }
 
-{NUMERO} {
-  printf("Número: %s\n", yytext);
+{NUMERO_REAL} {
+	yylval.real = atof(yytext);
+	return NUMERO_REAL;
 }
 {STRING} {
-  printf("String: %s\n", yytext);
-}
-{ARITMETICO} {
-  printf("Operador aritmético: %s\n", yytext);
-}
-{LOGICO} {
-  printf("Operador lógico: %s\n", yytext);
+  strcpy(yylval.texto, yytext);
+	return STRING;
 }
 
+[-+()=/*^] {
+  return *yytext;
+}
+
+{LOGICO} {
+  printf("Apenas léxico. Operador lógico: %s\n", yytext);
+}
+
+"\n"|" "|"\t" {
+  /* ignore */
+}
 {INVALIDO} {
-  printf("Caractere inválido: %s\n", yytext);
+  /* ignore */
 }
 
 %%
-
-int main() {
-  
-  yyin = fopen("in.sena", "r");
-  yylex();
-  fclose(yyin);
-
-  return 0;
-}
