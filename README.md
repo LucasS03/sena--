@@ -31,11 +31,17 @@ real soma
 ```
 real soma1
 ```
+- mais de uma variável
+```
+real x, y, area
+```
 
 #### Atribuição de valores
 ```
-a << 5
-b << 10
+real a << 5
+real b, soma
+
+b << 10.0
 soma << a * b
 ```
 

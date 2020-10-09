@@ -2,14 +2,7 @@ inicio @@ indicador de início do programa
 
   @@ declaração e reconhecimento de variáveis
   @@ variáveis com um ou mais caracteres
-  real a
-  real b 
-  real soma
-  real subtracao
-  real divisao
-  real multiplicacao
-  real exponenciacao
-  real radiciacao
+  real a, b, soma, subtracao, divisao, multiplicacao, exponenciacao, radiciacao
 
   escreva("Digite o valor de A:")
   leia(a)

@@ -1,8 +1,6 @@
 inicio
 
-  real b
-  real h
-  real area
+  real b, h, area
 
   escreva("Cálculo da área do retângulo")
   escreva("") @@ pular linha

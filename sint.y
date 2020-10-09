@@ -70,15 +70,7 @@ prog: INICIO cod FIM ;
 
 cod: cod cmdos | ;
 
-cmdos: 
-  REAL VARIAVEL {
-    
-    VARS * aux = srch(l1, $2);
-    if (aux == NULL)
-      l1 = ins(l1, $2);
-    else
-      printf ("A variável '%s' já existe.\n",$2);
-  } | 
+cmdos:  decl |
 
   ESCREVER '(' STRING ')' {
     int i;
@@ -115,6 +107,42 @@ cmdos:
       aux->value = $3;
     }
   };
+
+decl: 
+  REAL VARIAVEL {
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL)
+      l1 = ins(l1, $2);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+
+  } | REAL VARIAVEL ATRIBUICAO exp {
+    
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL) {
+      l1 = ins(l1, $2);
+      aux = srch(l1, $2);
+      aux->value = $4;
+    } else {
+      printf ("A variável '%s' já existe.\n",$2);
+    }
+
+  } | REAL VARIAVEL ',' decl {
+    VARS * aux = srch(l1, $2);
+    if (aux == NULL)
+      l1 = ins(l1, $2);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+  } | VARIAVEL {
+    VARS * aux = srch(l1, $1);
+    if (aux == NULL)
+      l1 = ins(l1, $1);
+    else
+      printf ("A variável '%s' já existe.\n",$1);
+  };
+
 
 exp: 
   RAIZ '(' exp ')' {
