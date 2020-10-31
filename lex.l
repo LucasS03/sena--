@@ -46,7 +46,7 @@ INVALIDO .
 }
 
 {INTEIRO} {
-  // ...
+  return INTEIRO;
 }
 {REAL} {
   return REAL;
@@ -74,7 +74,7 @@ INVALIDO .
 
 {NUMERO_REAL} {
 	yylval.real = atof(yytext);
-	return NUMERO_REAL;
+	return NUM_REAL;
 }
 {STRING} {
   strcpy(yylval.texto, yytext);

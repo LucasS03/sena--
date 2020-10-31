@@ -1,19 +1,16 @@
 inicio
 
-  real b, h, area
+  inteiro a, b, e
+  real c, d, f
 
-  escreva("Cálculo da área do retângulo")
-  escreva("") @@ pular linha
+  e << 2
+  f << 2
 
-  escreva("Digite a base: ")
+  leia(a)
   leia(b)
+  leia(c)
+  leia(d)
 
-  escreva("Digite a altura: ")
-  leia(h)
-
-  escreva("")
-  escreva("A área do retângulo é: ")
-  area << h * b
-  escreva(area)
-
+  escreva(a * b * c * d * e * f)
+  
 fim

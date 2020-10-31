@@ -4,6 +4,9 @@
   #include <string.h>
   #include <math.h>
 
+  #define TYPE_INT "INT"
+  #define TYPE_FLOAT "FLOAT"
+
   int yylex();
 
   void yyerror(char *s) {
@@ -11,15 +14,22 @@
   }
 
   typedef struct vars {
+    char type[10];
 		char name[50];
-		float value;
+
+		float vfloat;
+    int vint;
+
 		struct vars * prox;
 	} VARS;
 
   // add nova variável na lista
-	VARS * ins(VARS*l,char n[]){
-		VARS*new =(VARS*)malloc(sizeof(VARS));
-		strcpy(new->name,n);
+	VARS * ins(VARS*l,char n[], char type[]){
+		VARS *new = (VARS*) malloc(sizeof(VARS));
+		
+    strcpy(new->name,n);
+    strcpy(new->type, type);
+
 		new->prox = l;
 		return new;
 	}
@@ -35,21 +45,29 @@
 		}
 		return aux;
 	}
+
+  // retorna ultima variável salva
+  VARS *getLastType(VARS *l) {
+    VARS *aux = l;
+    return aux;
+  }
 	
 	VARS *l1;
 %}
 
 %union{
 	float real;
+  int inteiro;
 	char texto[50];
 }
 
-%token <real>NUMERO_REAL
+%token <real>NUM_REAL
 %token <texto>VARIAVEL
 %token <texto>STRING
 %token INICIO
 %token FIM
 %token REAL
+%token INTEIRO
 %token RAIZ
 %token ATRIBUICAO
 %token ESCREVER
@@ -62,7 +80,6 @@
 %right NEG
 
 %type <real>exp
-%type <real>valor
 
 %%
 
@@ -82,7 +99,19 @@ cmdos:  decl |
     printf ("\n");
   } |
 
+  ESCREVER '(' VARIAVEL ')' {
+    VARS * aux = srch(l1, $3);
+    
+    if (aux != NULL) {
+      if(strcmp(aux->type, TYPE_FLOAT) == 0)
+        printf("%.2f\n", aux->vfloat);
+      else
+        printf("%d\n", aux->vint);
+    }
+  } |
+
   ESCREVER '(' exp ')' {
+    // ver como pode verificar o tipo
     printf("%.2f \n", $3);
   } | 
 	
@@ -92,19 +121,31 @@ cmdos:  decl |
     if(aux == NULL) {
       printf ("A variável '%s' não foi declarada\n", $3);
     } else {
+
       float f;
+      int i;
       printf("> ");
-      scanf("%f", &f);
-      aux->value = f;
+
+      if(strcmp(aux->type, TYPE_FLOAT) == 0) {
+        scanf("%f", &f);
+        aux->vfloat = f;
+      } else if(strcmp(aux->type, TYPE_INT) == 0) {
+        scanf("%d", &i);
+        aux->vint = i;
+      }
     }
   } |
 		
   VARIAVEL ATRIBUICAO exp {
     VARS * aux = srch(l1, $1);
+
     if (aux == NULL)
       printf ("Variável '%s' não foi declarada\n",$1);
     else {
-      aux->value = $3;
+      if(strcmp(aux->type, TYPE_FLOAT) == 0)
+        aux->vfloat = $3;
+      else if(strcmp(aux->type, TYPE_INT) == 0)
+        aux->vint = $3;
     }
   };
 
@@ -113,7 +154,7 @@ decl:
     VARS * aux = srch(l1, $2);
 
     if (aux == NULL)
-      l1 = ins(l1, $2);
+      l1 = ins(l1, $2, TYPE_FLOAT);
     else
       printf ("A variável '%s' já existe.\n",$2);
 
@@ -122,9 +163,9 @@ decl:
     VARS * aux = srch(l1, $2);
 
     if (aux == NULL) {
-      l1 = ins(l1, $2);
+      l1 = ins(l1, $2, TYPE_FLOAT);
       aux = srch(l1, $2);
-      aux->value = $4;
+      aux->vfloat = $4;
     } else {
       printf ("A variável '%s' já existe.\n",$2);
     }
@@ -132,17 +173,44 @@ decl:
   } | REAL VARIAVEL ',' decl {
     VARS * aux = srch(l1, $2);
     if (aux == NULL)
-      l1 = ins(l1, $2);
+      l1 = ins(l1, $2, TYPE_FLOAT);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+  } | INTEIRO VARIAVEL {
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL)
+      l1 = ins(l1, $2, TYPE_INT);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+
+  } | INTEIRO VARIAVEL ATRIBUICAO exp {
+    
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL) {
+      l1 = ins(l1, $2, TYPE_INT);
+      aux = srch(l1, $2);
+
+      aux->vint = (int)$4;
+    } else {
+      printf ("A variável '%s' já existe.\n", $2);
+    }
+
+  } | INTEIRO VARIAVEL ',' decl {
+    VARS * aux = srch(l1, $2);
+    if (aux == NULL)
+      l1 = ins(l1, $2, TYPE_INT);
     else
       printf ("A variável '%s' já existe.\n",$2);
   } | VARIAVEL {
     VARS * aux = srch(l1, $1);
-    if (aux == NULL)
-      l1 = ins(l1, $1);
-    else
+    if (aux == NULL) {
+      aux = getLastType(l1);
+      l1 = ins(l1, $1, aux->type);
+    } else
       printf ("A variável '%s' já existe.\n",$1);
   };
-
 
 exp: 
   RAIZ '(' exp ')' {
@@ -177,20 +245,22 @@ exp:
     $$ = -$2;
   } |
 
-  valor {
+  NUM_REAL {
     $$ = $1;
-  } |
+  } | 
 
   VARIAVEL {
     VARS * aux = srch(l1,$1);
     if (aux == NULL)
       printf ("Variável '%s' não foi declarada.\n",$1);
-    else
-      $$ = aux->value;
-};
-
-valor: NUMERO_REAL {
-  $$ = $1;
+    else {
+      if(strcmp(aux->type, TYPE_FLOAT) == 0)
+        $$ = aux->vfloat;
+      else if(strcmp(aux->type, TYPE_INT) == 0)
+        $$ = aux->vint;
+      else 
+        printf("Variável é String");
+    }
 };
 
 %%
