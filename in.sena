@@ -1,16 +1,23 @@
 inicio
 
-  inteiro a, b, e
-  real c, d, f
+  inteiro idade
+  real peso
+  texto nome
 
-  e << 2
-  f << 2
+  escreva("Digite seu nome: ")
+  leia(nome)
 
-  leia(a)
-  leia(b)
-  leia(c)
-  leia(d)
+  escreva("Digite sua idade: ")
+  leia(idade)
 
-  escreva(a * b * c * d * e * f)
-  
+  escreva("Digite seu peso: ")
+  leia(peso)
+
+  escreva("seu nome é ")
+  escreva(nome)
+  escreva("seu peso é ")
+  escreva(peso)
+  escreva("sua idade é ")
+  escreva(idade)
+
 fim

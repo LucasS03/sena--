@@ -6,6 +6,7 @@
 
   #define TYPE_INT "INT"
   #define TYPE_FLOAT "FLOAT"
+  #define TYPE_STRING "STRING"
 
   int yylex();
 
@@ -19,15 +20,16 @@
 
 		float vfloat;
     int vint;
+    char vstring[200];
 
 		struct vars * prox;
 	} VARS;
 
   // add nova variável na lista
-	VARS * ins(VARS*l,char n[], char type[]){
+	VARS * ins(VARS*l, char n[], char type[]){
 		VARS *new = (VARS*) malloc(sizeof(VARS));
 		
-    strcpy(new->name,n);
+    strcpy(new->name, n);
     strcpy(new->type, type);
 
 		new->prox = l;
@@ -36,20 +38,40 @@
 
   // busca uma variável na lista de variáveis
 	VARS *srch(VARS*l,char n[]){
-		VARS*aux = l;
+		VARS *aux = l;
+
 		while(aux != NULL){
-			if(strcmp(n,aux->name)==0){
+			if(strcmp(n, aux->name) == 0){
 				return aux;
 			}
+
 			aux = aux->prox;
 		}
+
 		return aux;
 	}
 
-  // retorna ultima variável salva
+  // retorna última variável salva
   VARS *getLastType(VARS *l) {
     VARS *aux = l;
     return aux;
+  }
+
+  void println(char str[]) {
+    int i;
+    for(i = 0; str[i] != '\0'; ++i){
+      if(str[i] != '\"')
+        printf("%c", str[i]);
+    }
+    printf("\n");
+  }
+
+  void print(char str[]) {
+    int i;
+    for(i = 0; str[i] != '\0'; ++i){
+      if(str[i] != '\"')
+        printf("%c", str[i]);
+    }
   }
 	
 	VARS *l1;
@@ -58,7 +80,7 @@
 %union{
 	float real;
   int inteiro;
-	char texto[50];
+	char texto[200];
 }
 
 %token <real>NUM_REAL
@@ -68,6 +90,7 @@
 %token FIM
 %token REAL
 %token INTEIRO
+%token TEXTO
 %token RAIZ
 %token ATRIBUICAO
 %token ESCREVER
@@ -90,23 +113,22 @@ cod: cod cmdos | ;
 cmdos:  decl |
 
   ESCREVER '(' STRING ')' {
-    int i;
-
-    for(i = 0; $3[i] != '\0'; ++i){
-      if($3[i] != '\"')
-        printf("%c", $3[i]);
-    }
-    printf ("\n");
+    println($3);
   } |
 
   ESCREVER '(' VARIAVEL ')' {
     VARS * aux = srch(l1, $3);
     
     if (aux != NULL) {
+
       if(strcmp(aux->type, TYPE_FLOAT) == 0)
         printf("%.2f\n", aux->vfloat);
-      else
+      if(strcmp(aux->type, TYPE_STRING) == 0)
+        println(aux->vstring);
+      if(strcmp(aux->type, TYPE_INT) == 0)
         printf("%d\n", aux->vint);
+    } else {
+      printf("ERRO: A váriavel %s não existe\n", $3);
     }
   } |
 
@@ -124,6 +146,7 @@ cmdos:  decl |
 
       float f;
       int i;
+      char s[200];
       printf("> ");
 
       if(strcmp(aux->type, TYPE_FLOAT) == 0) {
@@ -132,8 +155,20 @@ cmdos:  decl |
       } else if(strcmp(aux->type, TYPE_INT) == 0) {
         scanf("%d", &i);
         aux->vint = i;
+      } else {
+        scanf("%s", s);
+        strcpy(aux->vstring, s);
       }
     }
+  } |
+
+  VARIAVEL ATRIBUICAO STRING {
+    VARS * aux = srch(l1, $1);
+
+    if (aux == NULL)
+      printf ("Variável '%s' não foi declarada\n",$1);
+    else 
+      strcpy(aux->vstring, $3);
   } |
 		
   VARIAVEL ATRIBUICAO exp {
@@ -150,6 +185,35 @@ cmdos:  decl |
   };
 
 decl: 
+  TEXTO VARIAVEL {
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL)
+      l1 = ins(l1, $2, TYPE_STRING);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+
+  } | TEXTO VARIAVEL ATRIBUICAO STRING {
+    
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL) {
+      l1 = ins(l1, $2, TYPE_STRING);
+      aux = srch(l1, $2);
+      strcpy(aux->vstring, $4);
+    } else {
+      printf ("A variável '%s' já existe.\n",$2);
+    }
+
+  } | TEXTO VARIAVEL ',' decl {
+    VARS * aux = srch(l1, $2);
+
+    if (aux == NULL)
+      l1 = ins(l1, $2, TYPE_STRING);
+    else
+      printf ("A variável '%s' já existe.\n",$2);
+  } | 
+
   REAL VARIAVEL {
     VARS * aux = srch(l1, $2);
 

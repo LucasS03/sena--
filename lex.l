@@ -52,7 +52,7 @@ INVALIDO .
   return REAL;
 }
 {TEXTO} {
-  // return TEXTO;
+  return TEXTO;
 }
 {RAIZ} {
   return RAIZ;

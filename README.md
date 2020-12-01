@@ -1,6 +1,6 @@
 # sena-- 
 
-Esta linguagem está sendo desenvolvida na disciplina de compiladores. A linguagem ainda não está completa, aceita apenas tipo int que internamente é convertido para float e o tipo float.
+Esta linguagem está sendo desenvolvida na disciplina de compiladores. A linguagem ainda não está completa, aceita tipo inteiro, real e texto.
 
 #### Marcadores de início e fim do programa
 ```
@@ -17,32 +17,43 @@ fim
 
 #### Tipos
 - real: aceita um número inteiro `a << 10` ou real `a << 10.0`
+- inteiro: aceita um número inteiro `a << 10` e converte número real `a << 10.5` fica `a = 10`
+- texto: aceita um texto `nome << "Lucas"`
 
 #### Declaração de variáveis
 - com um caractere
 ```
 real a
+inteiro b
+texto c
 ```
 - mais de um caractere
 ```
 real soma 
+inteiro subtracao
+texto nomeOperacao
 ```
 - misturando letras e números
 ```
 real soma1
+inteiro subtracao2
+texto nomeOperacao1
 ```
 - mais de uma variável
 ```
 real x, y, area
+inteiro time1, time2
+texto nome, sobrenome
 ```
 
 #### Atribuição de valores
 ```
-real a << 5
+inteiro a << 5
 real b, soma
+texto nomeOperacao << "Soma da operação: "
 
-b << 10.0
-soma << a * b
+b << 10.5
+soma << a + b
 ```
 
 #### Operação de escrita
@@ -51,13 +62,23 @@ escreva("Hello Word!")
 escreva(a)
 escreva(5.0)
 escreva(a + b)
+escreva(nomeOperacao)
 ```
 
 #### Operação de leitura
 ```
-real idade
+inteiro idade
+real peso
+texto nome
+
+escreva("Digite seu nome: ")
+leia(nome)
+
 escreva("Digite sua idade: ")
 leia(idade)
+
+escreva("Digite seu peso: ")
+leia(peso)
 ```
 
 #### Operações matemáticas
